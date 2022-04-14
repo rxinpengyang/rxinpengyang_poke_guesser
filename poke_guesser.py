@@ -16,7 +16,8 @@ from PyQt5.QtWidgets import (
     QPushButton, 
     QLineEdit,
     QVBoxLayout,
-    QWidget
+    QWidget,
+    QShortcut
 )
 from PyQt5.QtGui import (
     QImage, 
@@ -57,7 +58,8 @@ def on_submit(answer):
     else:
         reply_box.setText(f'Incorrect, it is {pokemon_name}')
     entry_box.setText('')
-    new_game_button = QPushButton('Play again?')
+    new_game_button = QPushButton('Play again? (ctrl + p)')
+    QShortcut("Ctrl+p", widget).activated.connect(new_game)
     new_game_button.clicked.connect(new_game)
     new_game_button.show()
     layout.addWidget(new_game_button)

@@ -65,6 +65,7 @@ def on_submit(answer):
     layout.addWidget(new_game_button)
 
 def new_game():
+    #pixmap_widget.clear()
     os.execl(sys.executable, sys.executable, *sys.argv)
 
 if __name__ == '__main__':

@@ -1,6 +1,6 @@
-"""
-TODO: Add a pokeball icon top left for Eden.
-"""
+'''
+
+'''
 import os
 import sys
 import requests
@@ -27,6 +27,9 @@ API_URL = "https://pokeapi.co/api/v2/"
 class MainWindow(QMainWindow):
     def __init__(self):
         super().__init__()
+        self.pokedex_no = None
+        self.pokemon_name = None
+
         self.setWindowTitle('Poke Guesser v2')
         # self.setFixedSize(800, 600)
         self.layout = QVBoxLayout()
@@ -35,8 +38,8 @@ class MainWindow(QMainWindow):
         self.add_window_icon()
 
         # Initialize pixmap.
-        self.pokemon_pixmap = QLabel(self)
-        self.pokemon_pixmap.show()
+        self.pokemon_sprite_pixmap = QLabel(self)
+        self.pokemon_sprite_pixmap.show()
 
         # Initialize message box.
         self.message_box = QLabel(self)
@@ -57,7 +60,7 @@ class MainWindow(QMainWindow):
         self.new_game_button = QPushButton('Next Pokemon')
         self.new_game_button.hide()
 
-        self.layout.addWidget(self.pokemon_pixmap)
+        self.layout.addWidget(self.pokemon_sprite_pixmap)
         self.layout.addWidget(self.message_box)
         self.layout.addWidget(self.entry_box)
         self.layout.addWidget(self.submit_button)
@@ -68,6 +71,8 @@ class MainWindow(QMainWindow):
 
         self.setCentralWidget(widget)
 
+        self.new_game()
+
     def add_window_icon(self):
         response = requests.get(f'{API_URL}/item/poke-ball')
         window_icon_url = response.json()['sprites']['default']
@@ -75,8 +80,35 @@ class MainWindow(QMainWindow):
         window_icon_pixmap.loadFromData(requests.get(window_icon_url).content)
         self.setWindowIcon(QIcon(window_icon_pixmap))
 
+    def get_pokemon_name(self):
+        search = f'{API_URL}/pokemon/{self.pokedex_no}'
+        response = requests.get(search)
+        return response.json()["name"]
+
+    def set_pokemon_sprite_pixmap(self):
+        search = f'{API_URL}/pokemon/{self.pokedex_no}'
+        response = requests.get(search)
+        pokemon_sprite_url = response.json()["sprites"]["front_default"]
+        pokemon_sprite_image = QImage()
+        pokemon_sprite_image\
+            .loadFromData(requests.get(pokemon_sprite_url).content)
+        self.pokemon_sprite_pixmap\
+            .setPixmap(QPixmap(pokemon_sprite_image).scaled(256, 256))
+
     def on_submit(self):
         pass
+
+    def new_game(self):
+        '''
+        TODO: Generate non-repeating pokedex numbers.
+        '''
+        self.pokedex_no = random.randint(1, 151)
+        self.pokemon_name = self.get_pokemon_name()
+        self.pokemon_sprite_pixmap.clear()
+        self.set_pokemon_sprite_pixmap()
+        self.message_box.setText('Who\'s that pokemon?')
+        self.entry_box.setText('')
+        self.new_game_button.hide()
 
 if __name__ == '__main__':
     app = QApplication(sys.argv)

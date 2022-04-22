@@ -1,1 +1,2 @@
-# rxinpengyang_poke_guesser
+# Poké Guesser Game
+pip install pyqt5 requests

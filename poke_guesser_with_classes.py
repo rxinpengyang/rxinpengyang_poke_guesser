@@ -54,10 +54,12 @@ class MainWindow(QMainWindow):
 
         # Initialize submit button.
         self.submit_button = QPushButton('Submit')
+        self.submit_button.clicked.connect(self.on_submit)
         self.submit_button.show()
 
         # Initialize new game button.
         self.new_game_button = QPushButton('Next Pokemon')
+        self.new_game_button.clicked.connect(self.new_game)
         self.new_game_button.hide()
 
         self.layout.addWidget(self.pokemon_sprite_pixmap)
@@ -96,7 +98,11 @@ class MainWindow(QMainWindow):
             .setPixmap(QPixmap(pokemon_sprite_image).scaled(256, 256))
 
     def on_submit(self):
-        pass
+        if self.entry_box.text().lower() == self.pokemon_name:
+            self.message_box.setText('Correct!')
+        else:
+            self.message_box.setText(f'Incorrect, it is {self.pokemon_name}')
+        self.new_game_button.show()
 
     def new_game(self):
         '''
